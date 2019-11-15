@@ -86,3 +86,14 @@ and eval_if env c e1 e2 =
     starting with the empty envir onment. *)
 let interp (s : string) : value =
   s |> parse |> eval Env.empty
+
+let string_of_value (v : value) : string =
+  match v with
+    | Bool b -> string_of_bool b
+    | Int i -> string_of_int i
+    | Closure (x, e, defenv) -> "fun"
+
+let _ = let _ = print_string "> " in read_line ()
+        |> interp
+        |> string_of_value
+        |> print_endline
