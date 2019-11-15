@@ -19,6 +19,9 @@ rule read =
   | "->" { ARROW }
   | "fun" { FUN }
   | "+" { PLUS }
+  | "-" { MINUS }
+  | "*" { TIMES }
+  | "/" { DIV }
   | id { ID (Lexing.lexeme lexbuf) }
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | eof { EOF }

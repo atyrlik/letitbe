@@ -1,6 +1,9 @@
 (** The type of binary operators. *)
 type bop = 
-  | Add
+  | Plus
+  | Minus
+  | Times
+  | Div
 
 (** The type of the abstract syntax tree (AST). *)
 type expr =

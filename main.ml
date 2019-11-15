@@ -44,7 +44,10 @@ and eval_var env x =
 
 (** [eval_bop bop e1 e2] is the [e] such that [e1 bop e2 ==> e]. *)
 and eval_bop bop v1 v2 = match bop, v1, v2 with
-  | Add, Int a, Int b -> Int (a + b)
+  | Plus, Int a, Int b -> Int (a + b)
+  | Minus, Int a, Int b -> Int (a - b)
+  | Times, Int a, Int b -> Int (a * b)
+  | Div, Int a, Int b -> Int (a / b)
   | _ -> failwith "Operator and operand type mismatch"
 
 (** [eval_app env e1 e2] is the [v] such that [<env, e1 e2> ==> v]. *)
