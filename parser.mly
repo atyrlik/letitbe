@@ -17,7 +17,7 @@ let rec make_apply e = function
 %token FUN ARROW LPAREN RPAREN EOF
 %token <int> INT
 %token LET
-%token EQUALS
+%token BE
 %token IN
 %token PLUS
 
@@ -36,7 +36,7 @@ expr:
 	| e = simpl_expr { e }
 	| e = simpl_expr; es = simpl_expr+ { make_apply e es }
 	| e1 = expr; PLUS; e2 = expr { Binop (Add, e1, e2) }
-	| LET; x = ID; EQUALS; e1 = expr; IN; e2 = expr { Let (x, e1, e2) }
+	| LET; x = ID; BE; e1 = expr; IN; e2 = expr { Let (x, e1, e2) }
 	| FUN; x = ID; ARROW; e = expr { Fun (x, e) }
 	;
 

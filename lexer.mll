@@ -12,7 +12,7 @@ rule read =
   parse
   | white { read lexbuf }
   | "let" { LET }
-  | "=" { EQUALS }
+  | "be" { BE }
   | "in" { IN }
   | "(" { LPAREN }
   | ")" { RPAREN }
