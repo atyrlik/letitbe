@@ -18,12 +18,14 @@ type env = value Env.t
     In the environment model, that is a closure. *)
 and value = 
   | Closure of string * expr * env
+  | Bool of bool
   | Int of int
 
 
 (** [eval env e] is the [<env, e> ==> v] relation. *)
 let rec eval (env : env) (e : expr) : value = match e with
   | Var x -> eval_var env x
+  | Bool b -> Bool(b)
   | Int i -> Int(i)
   | Binop (bop, e1, e2) -> begin
       let v1 = eval env e1 in

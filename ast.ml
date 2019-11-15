@@ -8,6 +8,7 @@ type bop =
 (** The type of the abstract syntax tree (AST). *)
 type expr =
   | Var of string
+  | Bool of bool
   | Int of int
   | Binop of bop * expr * expr
   | App of expr * expr

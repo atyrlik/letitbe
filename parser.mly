@@ -23,6 +23,8 @@ let rec make_apply e = function
 %token MINUS
 %token TIMES
 %token DIV
+%token TRUE
+%token FALSE
 
 %nonassoc IN
 %left PLUS
@@ -51,6 +53,8 @@ expr:
 
 simpl_expr:
     | i = INT { Int i }
+    | b = TRUE { Bool true }
+    | b = FALSE { Bool false }
 	| x = ID { Var x }
     | LPAREN; e=expr; RPAREN { e } 
   ;
