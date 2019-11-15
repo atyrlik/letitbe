@@ -16,3 +16,4 @@ type expr =
   | App of expr * expr
   | Let of string * expr * expr
   | Fun of string * expr
+  | If of expr * expr * expr

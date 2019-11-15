@@ -26,6 +26,9 @@ rule read =
   | "false" { FALSE }
   | "or" { OR }
   | "and" { AND }
+  | "if" { IF }
+  | "then" { THEN }
+  | "else" { ELSE }
   | id { ID (Lexing.lexeme lexbuf) }
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | eof { EOF }

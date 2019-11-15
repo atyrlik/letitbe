@@ -39,6 +39,8 @@ let rec eval (env : env) (e : expr) : value = match e with
       let new_env = Env.add x v1 env in
       eval new_env e2
     end
+  | If (c, e1, e2) -> eval_if env c e1 e2
+
 
 (** [eval_var env x] is the [v] such that [<env, x> ==> v]. *)
 and eval_var env x = 
@@ -64,6 +66,13 @@ and eval_app env e1 e2 =
       eval env_for_body e
     end
   | _ -> failwith "Only function can be applied to values"
+
+and eval_if env c e1 e2 = 
+  match eval env c with
+    | Bool true -> eval env e1 
+    | Bool false -> eval env e2
+    | _ -> failwith "Condition of if must have type bool"
+
 
 (** [interp s] interprets [s] by parsing
     and evaluating it with the big-step model,

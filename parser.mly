@@ -27,6 +27,9 @@ let rec make_apply e = function
 %token FALSE
 %token OR
 %token AND
+%token IF
+%token THEN
+%token ELSE
 
 %nonassoc IN
 %left PLUS
@@ -55,6 +58,7 @@ expr:
 	| e1 = expr; AND;  e2 = expr { Binop (And, e1, e2) }
 	| LET; x = ID; BE; e1 = expr; IN; e2 = expr { Let (x, e1, e2) }
 	| FUN; x = ID; ARROW; e = expr { Fun (x, e) }
+	| IF; c = expr; THEN; e1 = expr; ELSE; e2 = expr { If(c, e1, e2) }
 	;
 
 simpl_expr:
