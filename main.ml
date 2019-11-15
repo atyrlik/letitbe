@@ -93,7 +93,12 @@ let string_of_value (v : value) : string =
     | Int i -> string_of_int i
     | Closure (x, e, defenv) -> "fun"
 
-let _ = let _ = print_string "> " in read_line ()
-        |> interp
-        |> string_of_value
-        |> print_endline
+let rec prompt _ = 
+  let () = print_string "> " in
+  let () = read_line ()
+              |> interp
+              |> string_of_value
+              |> print_endline in
+  prompt 1
+
+let _ = prompt 1
