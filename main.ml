@@ -54,6 +54,12 @@ and eval_bop bop v1 v2 = match bop, v1, v2 with
   | Div, Int a, Int b -> Int (a / b)
   | Or, Bool a, Bool b -> Bool (a || b)
   | And, Bool a, Bool b -> Bool (a && b)
+  | Equal, Int a, Int b -> Bool (a = b)
+  | Equal, Bool a, Bool b -> Bool (a = b)
+  | Greater, Int a, Int b -> Bool (a > b)
+  | GreaterEqual, Int a, Int b -> Bool (a >= b)
+  | Less, Int a, Int b -> Bool (a < b)
+  | LessEqual, Int a, Int b -> Bool (a <= b)
   | _ -> failwith "Operator and operand type mismatch"
 
 (** [eval_app env e1 e2] is the [v] such that [<env, e1 e2> ==> v]. *)

@@ -6,6 +6,11 @@ type bop =
   | Div
   | Or
   | And
+  | Equal
+  | Greater
+  | GreaterEqual
+  | Less
+  | LessEqual
 
 (** The type of the abstract syntax tree (AST). *)
 type expr =

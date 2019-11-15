@@ -29,6 +29,11 @@ rule read =
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }
+  | ">=" { GREATEREQUAL }
+  | "<=" { LESSEQUAL }
+  | ">" { GREATER }
+  | "<" { LESS }
+  | "=" { EQUAL }
   | id { ID (Lexing.lexeme lexbuf) }
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | eof { EOF }

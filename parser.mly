@@ -30,14 +30,24 @@ let rec make_apply e = function
 %token IF
 %token THEN
 %token ELSE
+%token EQUAL
+%token GREATER
+%token GREATEREQUAL
+%token LESS
+%token LESSEQUAL
 
 %nonassoc IN
+%left OR
+%left AND
+%left EQUAL
+%left GREATER
+%left GREATEREQUAL
+%left LESS
+%left LESSEQUAL
 %left PLUS
 %left MINUS
 %left TIMES
 %left DIV
-%left OR
-%left AND
 
 %start <Ast.expr> prog
 
@@ -56,6 +66,11 @@ expr:
 	| e1 = expr; DIV; e2 = expr { Binop (Div, e1, e2) }
 	| e1 = expr; OR;  e2 = expr { Binop (Or, e1, e2) }
 	| e1 = expr; AND;  e2 = expr { Binop (And, e1, e2) }
+	| e1 = expr; EQUAL;  e2 = expr { Binop (Equal, e1, e2) }
+	| e1 = expr; GREATER;  e2 = expr { Binop (Greater, e1, e2) }
+	| e1 = expr; GREATEREQUAL;  e2 = expr { Binop (GreaterEqual, e1, e2) }
+	| e1 = expr; LESS;  e2 = expr { Binop (Less, e1, e2) }
+	| e1 = expr; LESSEQUAL;  e2 = expr { Binop (LessEqual, e1, e2) }
 	| LET; x = ID; BE; e1 = expr; IN; e2 = expr { Let (x, e1, e2) }
 	| FUN; x = ID; ARROW; e = expr { Fun (x, e) }
 	| IF; c = expr; THEN; e1 = expr; ELSE; e2 = expr { If(c, e1, e2) }
