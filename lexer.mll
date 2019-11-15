@@ -24,6 +24,8 @@ rule read =
   | "/" { DIV }
   | "true" { TRUE }
   | "false" { FALSE }
+  | "or" { OR }
+  | "and" { AND }
   | id { ID (Lexing.lexeme lexbuf) }
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | eof { EOF }

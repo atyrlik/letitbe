@@ -25,12 +25,16 @@ let rec make_apply e = function
 %token DIV
 %token TRUE
 %token FALSE
+%token OR
+%token AND
 
 %nonassoc IN
 %left PLUS
 %left MINUS
 %left TIMES
 %left DIV
+%left OR
+%left AND
 
 %start <Ast.expr> prog
 
@@ -47,14 +51,16 @@ expr:
 	| e1 = expr; MINUS; e2 = expr { Binop (Minus, e1, e2) }
 	| e1 = expr; TIMES; e2 = expr { Binop (Times, e1, e2) }
 	| e1 = expr; DIV; e2 = expr { Binop (Div, e1, e2) }
+	| e1 = expr; OR;  e2 = expr { Binop (Or, e1, e2) }
+	| e1 = expr; AND;  e2 = expr { Binop (And, e1, e2) }
 	| LET; x = ID; BE; e1 = expr; IN; e2 = expr { Let (x, e1, e2) }
 	| FUN; x = ID; ARROW; e = expr { Fun (x, e) }
 	;
 
 simpl_expr:
     | i = INT { Int i }
-    | b = TRUE { Bool true }
-    | b = FALSE { Bool false }
+    | TRUE { Bool true }
+    | FALSE { Bool false }
 	| x = ID { Var x }
     | LPAREN; e=expr; RPAREN { e } 
   ;

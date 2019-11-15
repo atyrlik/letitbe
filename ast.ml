@@ -4,6 +4,8 @@ type bop =
   | Minus
   | Times
   | Div
+  | Or
+  | And
 
 (** The type of the abstract syntax tree (AST). *)
 type expr =

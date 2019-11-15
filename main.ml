@@ -50,6 +50,8 @@ and eval_bop bop v1 v2 = match bop, v1, v2 with
   | Minus, Int a, Int b -> Int (a - b)
   | Times, Int a, Int b -> Int (a * b)
   | Div, Int a, Int b -> Int (a / b)
+  | Or, Bool a, Bool b -> Bool (a || b)
+  | And, Bool a, Bool b -> Bool (a && b)
   | _ -> failwith "Operator and operand type mismatch"
 
 (** [eval_app env e1 e2] is the [v] such that [<env, e1 e2> ==> v]. *)
