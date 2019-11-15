@@ -44,7 +44,8 @@ let rec eval (env : env) (e : expr) : value = match e with
 
 (** [eval_var env x] is the [v] such that [<env, x> ==> v]. *)
 and eval_var env x = 
-  try Env.find x env with Not_found -> failwith "Unbound variable"
+  try Env.find x env with Not_found ->
+    failwith (String.concat "Unbound variable: " ["";x])
 
 (** [eval_bop bop e1 e2] is the [e] such that [e1 bop e2 ==> e]. *)
 and eval_bop bop v1 v2 = match bop, v1, v2 with
