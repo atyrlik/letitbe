@@ -19,6 +19,7 @@ type expr =
   | Int of int
   | Binop of bop * expr * expr
   | App of expr * expr
-  | Let of string * expr * expr
+  | LetIn of string * expr * expr
+  | Let of string * expr
   | Fun of string * expr
   | If of expr * expr * expr

@@ -20,6 +20,7 @@ and value =
   | Closure of string * expr * env
   | Bool of bool
   | Int of int
+  | Env of env
 
 
 (** [eval env e] is the [<env, e> ==> v] relation. *)
@@ -34,7 +35,8 @@ let rec eval (env : env) (e : expr) : value = match e with
     end
   | App (e1, e2) -> eval_app env e1 e2
   | Fun (x, e) -> Closure (x, e, env)
-  | Let (x, e1, e2) -> begin
+  | Let (x, e) -> let v = eval env e in Env (Env.add x v env)
+  | LetIn (x, e1, e2) -> begin
       let v1 = eval env e1 in 
       let new_env = Env.add x v1 env in
       eval new_env e2
@@ -84,21 +86,25 @@ and eval_if env c e1 e2 =
 (** [interp s] interprets [s] by parsing
     and evaluating it with the big-step model,
     starting with the empty envir onment. *)
-let interp (s : string) : value =
-  s |> parse |> eval Env.empty
+let interp (env: env) (s : string) : value =
+  s |> parse |> eval env
 
-let string_of_value (v : value) : string =
+let rec string_of_value (v : value) : string =
   match v with
     | Bool b -> string_of_bool b
     | Int i -> string_of_int i
+    | Env e -> List.fold_left (fun acc (k, v) -> acc^k^":"^(string_of_value v)^" ") "" (Env.bindings e)
     | Closure (x, e, defenv) -> "fun"
 
-let rec prompt _ = 
+let rec prompt (env: env) = 
   let () = print_string "> " in
-  let () = read_line ()
-              |> interp
-              |> string_of_value
-              |> print_endline in
-  prompt 1
+  let line = read_line () in begin
+      let v = interp env line in
+      let () = string_of_value v |> print_endline in
+      match v with
+      | Closure (_, _, new_env) -> prompt new_env
+      | Env new_env -> prompt new_env
+      | _ -> prompt env
+    end
 
-let _ = prompt 1
+let _ = prompt Env.empty
