@@ -14,6 +14,7 @@ rule read =
   | "let" { LET }
   | "be" { BE }
   | "in" { IN }
+  | "rec" { REC }
   | "(" { LPAREN }
   | ")" { RPAREN }
   | "->" { ARROW }

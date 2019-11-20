@@ -18,6 +18,7 @@ type env = value Env.t
     In the environment model, that is a closure. *)
 and value = 
   | Closure of string * expr * env
+  | RecClosure of string * string * expr * env
   | Bool of bool
   | Int of int
   | Env of env
@@ -35,7 +36,13 @@ let rec eval (env : env) (e : expr) : value = match e with
     end
   | App (e1, e2) -> eval_app env e1 e2
   | Fun (x, e) -> Closure (x, e, env)
+  | RecFun (f, x, e) -> RecClosure (f, x, e, env)
   | Let (x, e) -> let v = eval env e in Env (Env.add x v env)
+  | LetRec (f, x, e1, e2) -> begin
+      let v1 = eval env (RecFun (f, x, e1)) in
+      let new_env = Env.add f v1 env in
+      eval new_env e2
+    end
   | LetIn (x, e1, e2) -> begin
       let v1 = eval env e1 in 
       let new_env = Env.add x v1 env in
@@ -74,6 +81,10 @@ and eval_app env e1 e2 =
       let env_for_body = Env.add x v2 base_env_for_body in
       eval env_for_body e
     end
+  | RecClosure (f, x, e, defenv) as f_rec -> begin
+      let sub_e = subst (subst e e2 x) (RecFun (f, x, e)) f in
+      eval env sub_e
+    end
   | _ -> failwith "Only function can be applied to values"
 
 and eval_if env c e1 e2 = 
@@ -81,6 +92,29 @@ and eval_if env c e1 e2 =
     | Bool true -> eval env e1 
     | Bool false -> eval env e2
     | _ -> failwith "Condition of if must have type bool"
+
+(** [subst e v x] is [e] with [v] substituted for [x], that is, [e{v/x}]. *)
+and subst e v x = match e with
+  | Var y -> if x = y then v else e
+  | Bool _ -> e
+  | Int _ -> e
+  | Binop (bop, e1, e2) -> Binop (bop, subst e1 v x, subst e2 v x)
+  | App (e1, e2) -> App (subst e1 v x, subst e2 v x)
+  | Fun (y, e1) -> Fun (y, subst e1 v x)
+  | RecFun (f, y, e1) -> RecFun (f, y, subst e1 v x)
+  | Let (y, e1) -> Let (y, subst e1 v x)
+  | LetIn (y, e1, e2) ->
+    let e1' = subst e1 v x in
+    if x = y
+    then LetIn (y, e1', e2)
+    else LetIn (y, e1', subst e2 v x)
+  | LetRec (f, y, e1, e2) ->
+    let e1' = subst e1 v x in
+    if x = y
+    then LetRec (f, y, e1', e2)
+    else LetRec (f, y, e1', subst e2 v x)
+  | If (e1, e2, e3) -> If (subst e1 v x, subst e2 v x, subst e3 v x)
+  | _ -> e
 
 
 (** [interp s] interprets [s] by parsing
@@ -94,7 +128,8 @@ let rec string_of_value (v : value) : string =
     | Bool b -> string_of_bool b
     | Int i -> string_of_int i
     | Env e -> List.fold_left (fun acc (k, v) -> acc^k^":"^(string_of_value v)^" ") "" (Env.bindings e)
-    | Closure (x, e, defenv) -> "fun"
+    | Closure (_, _, _) -> "fun"
+    | RecClosure (_, _, _, _) -> "rec fun"
 
 let rec prompt (env: env) = 
   let () = print_string "> " in

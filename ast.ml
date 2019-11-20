@@ -20,6 +20,8 @@ type expr =
   | Binop of bop * expr * expr
   | App of expr * expr
   | LetIn of string * expr * expr
+  | LetRec of string * string * expr * expr
   | Let of string * expr
   | Fun of string * expr
+  | RecFun of string * string * expr
   | If of expr * expr * expr

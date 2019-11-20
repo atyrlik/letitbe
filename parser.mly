@@ -19,6 +19,7 @@ let rec make_apply e = function
 %token LET
 %token BE
 %token IN
+%token REC
 %token PLUS
 %token MINUS
 %token TIMES
@@ -71,6 +72,7 @@ expr:
 	| e1 = expr; GREATEREQUAL;  e2 = expr { Binop (GreaterEqual, e1, e2) }
 	| e1 = expr; LESS;  e2 = expr { Binop (Less, e1, e2) }
 	| e1 = expr; LESSEQUAL;  e2 = expr { Binop (LessEqual, e1, e2) }
+	| LET; REC; f = ID; BE; FUN; x = ID; ARROW; e1 = expr; IN; e2 = expr { LetRec (f, x, e1, e2) }
 	| LET; x = ID; BE; e1 = expr; IN; e2 = expr { LetIn (x, e1, e2) }
 	| LET; x = ID; BE; e = expr { Let (x, e) }
 	| FUN; x = ID; ARROW; e = expr { Fun (x, e) }
