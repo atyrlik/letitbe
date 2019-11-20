@@ -38,7 +38,12 @@ let rec eval (env : env) (e : expr) : value = match e with
   | Fun (x, e) -> Closure (x, e, env)
   | RecFun (f, x, e) -> RecClosure (f, x, e, env)
   | Let (x, e) -> let v = eval env e in Env (Env.add x v env)
-  | LetRec (f, x, e1, e2) -> begin
+  | LetRec (f, x, e1) -> begin
+      let v1 = eval env (RecFun (f, x, e1)) in
+      let new_env = Env.add f v1 env in
+      Env (Env.add f v1 new_env)
+    end
+  | LetRecIn (f, x, e1, e2) -> begin
       let v1 = eval env (RecFun (f, x, e1)) in
       let new_env = Env.add f v1 env in
       eval new_env e2
@@ -81,7 +86,7 @@ and eval_app env e1 e2 =
       let env_for_body = Env.add x v2 base_env_for_body in
       eval env_for_body e
     end
-  | RecClosure (f, x, e, defenv) as f_rec -> begin
+  | RecClosure (f, x, e, defenv) -> begin
       let sub_e = subst (subst e e2 x) (RecFun (f, x, e)) f in
       eval env sub_e
     end
@@ -108,14 +113,13 @@ and subst e v x = match e with
     if x = y
     then LetIn (y, e1', e2)
     else LetIn (y, e1', subst e2 v x)
-  | LetRec (f, y, e1, e2) ->
+  | LetRec (f, y, e1) -> LetRec (f, y, subst e1 v x)
+  | LetRecIn (f, y, e1, e2) ->
     let e1' = subst e1 v x in
     if x = y
-    then LetRec (f, y, e1', e2)
-    else LetRec (f, y, e1', subst e2 v x)
+    then LetRecIn (f, y, e1', e2)
+    else LetRecIn (f, y, e1', subst e2 v x)
   | If (e1, e2, e3) -> If (subst e1 v x, subst e2 v x, subst e3 v x)
-  | _ -> e
-
 
 (** [interp s] interprets [s] by parsing
     and evaluating it with the big-step model,
