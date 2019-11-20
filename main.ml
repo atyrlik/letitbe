@@ -39,12 +39,12 @@ let rec eval (env : env) (e : expr) : value = match e with
   | RecFun (f, x, e) -> RecClosure (f, x, e, env)
   | Let (x, e) -> let v = eval env e in Env (Env.add x v env)
   | LetRec (f, x, e1) -> begin
-      let v1 = eval env (RecFun (f, x, e1)) in
+      let v1 = eval env (RecFun ("$1", x, subst e1 (Var ("$1")) f)) in
       let new_env = Env.add f v1 env in
-      Env (Env.add f v1 new_env)
+      Env (new_env)
     end
   | LetRecIn (f, x, e1, e2) -> begin
-      let v1 = eval env (RecFun (f, x, e1)) in
+      let v1 = eval env (RecFun ("$1", x, subst e1 (Var ("$1")) f)) in
       let new_env = Env.add f v1 env in
       eval new_env e2
     end
