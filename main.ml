@@ -137,7 +137,7 @@ let rec string_of_value (v : value) : string =
     | String s -> s
     | Env e -> List.fold_left (fun acc (k, v) -> acc^k^":"^(string_of_value v)^" ") "" (Env.bindings e)
     | Closure (_, _, _) -> "fun"
-    | RecClosure (_, _, _, _) -> "rec fun"
+    | RecClosure (_, _, _, _) -> "recfun"
 
 let rec prompt (env: env) = 
   let () = print_string "> " in
