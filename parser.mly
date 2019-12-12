@@ -15,11 +15,13 @@ let rec make_apply e = function
 
 %token <string> ID
 %token <string> STRING
-%token FUN ARROW LPAREN RPAREN EOF
+%token FUN LPAREN RPAREN EOF
 %token <int> INT
 %token LET
 %token BE
 %token IN
+%token OF
+%token TO
 %token REC
 %token PLUS
 %token MINUS
@@ -73,11 +75,11 @@ expr:
 	| e1 = expr; GREATEREQUAL;  e2 = expr { Binop (GreaterEqual, e1, e2) }
 	| e1 = expr; LESS;  e2 = expr { Binop (Less, e1, e2) }
 	| e1 = expr; LESSEQUAL;  e2 = expr { Binop (LessEqual, e1, e2) }
-	| LET; REC; f = ID; BE; FUN; x = ID; ARROW; e1 = expr; IN; e2 = expr { LetRecIn (f, x, e1, e2) }
-	| LET; REC; f = ID; BE; FUN; x = ID; ARROW; e1 = expr { LetRec (f, x, e1) }
+	| LET; f = ID; BE; REC; FUN; OF; x = ID; TO; e1 = expr; IN; e2 = expr { LetRecIn (f, x, e1, e2) }
+	| LET; f = ID; BE; REC; FUN; OF; x = ID; TO; e1 = expr { LetRec (f, x, e1) }
 	| LET; x = ID; BE; e1 = expr; IN; e2 = expr { LetIn (x, e1, e2) }
 	| LET; x = ID; BE; e = expr { Let (x, e) }
-	| FUN; x = ID; ARROW; e = expr { Fun (x, e) }
+	| FUN; OF; x = ID; TO; e = expr { Fun (x, e) }
 	| IF; c = expr; THEN; e1 = expr; ELSE; e2 = expr { If(c, e1, e2) }
 	;
 

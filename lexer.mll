@@ -19,8 +19,9 @@ rule read =
   | "rec" { REC }
   | "(" { LPAREN }
   | ")" { RPAREN }
-  | "->" { ARROW }
-  | "fun" { FUN }
+  | "of" { OF }
+  | "to" { TO }
+  | "function" { FUN }
   | "+" { PLUS }
   | "-" { MINUS }
   | "*" { TIMES }
