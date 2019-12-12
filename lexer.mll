@@ -7,6 +7,8 @@ let digit = ['0'-'9']
 let int = '-'? digit+
 let letter = ['a'-'z' 'A'-'Z']
 let id = letter+
+let char = _
+let string = '"' char+ '"'
 
 rule read = 
   parse
@@ -36,5 +38,6 @@ rule read =
   | "<" { LESS }
   | "=" { EQUAL }
   | id { ID (Lexing.lexeme lexbuf) }
+  | string { STRING (Lexing.lexeme lexbuf) }
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   | eof { EOF }

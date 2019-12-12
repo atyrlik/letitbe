@@ -21,6 +21,7 @@ and value =
   | RecClosure of string * string * expr * env
   | Bool of bool
   | Int of int
+  | String of string
   | Env of env
 
 
@@ -29,6 +30,7 @@ let rec eval (env : env) (e : expr) : value = match e with
   | Var x -> eval_var env x
   | Bool b -> Bool(b)
   | Int i -> Int(i)
+  | String s -> String(s)
   | Binop (bop, e1, e2) -> begin
       let v1 = eval env e1 in
       let v2 = eval env e2 in
@@ -103,6 +105,7 @@ and subst e v x = match e with
   | Var y -> if x = y then v else e
   | Bool _ -> e
   | Int _ -> e
+  | String _ -> e
   | Binop (bop, e1, e2) -> Binop (bop, subst e1 v x, subst e2 v x)
   | App (e1, e2) -> App (subst e1 v x, subst e2 v x)
   | Fun (y, e1) -> Fun (y, subst e1 v x)
@@ -131,6 +134,7 @@ let rec string_of_value (v : value) : string =
   match v with
     | Bool b -> string_of_bool b
     | Int i -> string_of_int i
+    | String s -> s
     | Env e -> List.fold_left (fun acc (k, v) -> acc^k^":"^(string_of_value v)^" ") "" (Env.bindings e)
     | Closure (_, _, _) -> "fun"
     | RecClosure (_, _, _, _) -> "rec fun"

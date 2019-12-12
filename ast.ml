@@ -17,6 +17,7 @@ type expr =
   | Var of string
   | Bool of bool
   | Int of int
+  | String of string
   | Binop of bop * expr * expr
   | App of expr * expr
   | LetIn of string * expr * expr
