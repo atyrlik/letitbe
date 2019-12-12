@@ -7,7 +7,7 @@ let digit = ['0'-'9']
 let int = '-'? digit+
 let letter = ['a'-'z' 'A'-'Z']
 let id = letter+
-let char = _
+let char = [^'"']
 let string = '"' char+ '"'
 
 rule read = 
